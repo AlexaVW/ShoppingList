@@ -9,7 +9,17 @@
 
     let shoppingItems = $state<ShoppingItem[]>([]);
 
+    let newItem = $state({
+        item: '',
+        amount: 1
+    });
+
+    // GET
     onMount(async () => {
+        await GetItems();
+    });
+
+    async function GetItems(){
         try{
             const response = await fetch(
                 'https://localhost:7004/api/shoppinglist'
@@ -26,7 +36,42 @@
         catch{
             console.log('Could not load') 
         }
-    })
+    }
+
+    async function AddItem(){
+        try{
+            const response = await fetch(
+                'https://localhost:7004/api/shoppinglist',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newItem)
+                }
+            );
+
+            if(!response.ok){
+                throw new Error('Could not add item');
+            }
+
+            const data = await response.json();
+
+            console.log(data);
+            
+            // Refresh list
+            await GetItems();
+
+            newItem = {
+                item: '',
+                amount: 1
+            };
+
+        }
+        catch(error){
+            console.log('Could not add item', error);
+        }
+    }
 </script>
 
 <main>
@@ -36,6 +81,23 @@
         {#each shoppingItems as shoppingItem (shoppingItem.id)}
             <p>{shoppingItem.item} - Amount: {shoppingItem.amount}</p>
         {/each}
+    </div>
+
+    <div>
+        <h2>Add new item to shoppinglist</h2>
+
+        <input
+            type="text"
+            placeholder="Item"
+            bind:value={newItem.item}
+        />
+
+        <input
+            type="number"
+            bind:value={newItem.amount}
+        />
+
+        <button onclick={AddItem}>Add</button>
     </div>
    
 </main>
