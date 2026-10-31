@@ -72,6 +72,51 @@
             console.log('Could not add item', error);
         }
     }
+
+    async function UpdateItem(shoppingItem: ShoppingItem) {
+        try{
+            const response = await fetch(
+                `https://localhost:7004/api/shoppinglist/${shoppingItem.id}`,
+                {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(shoppingItem)
+                }
+            );
+
+            if(!response.ok){
+                throw new Error('Could not update item');
+            }
+
+            await GetItems();
+        }
+        catch(error){
+            console.log('Could not update item', error);
+        }
+    }
+
+    async function DeleteItem(id: number) {
+        try{
+            const response = await fetch(
+                `https://localhost:7004/api/shoppinglist/${id}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+            if(!response.ok){
+                throw new Error('Could not delete item');
+            }
+
+            await GetItems();
+        }
+        catch(error){
+            console.log('Could not delete item', error);
+        }
+    }
+
 </script>
 
 <main>
@@ -79,7 +124,20 @@
 
     <div>
         {#each shoppingItems as shoppingItem (shoppingItem.id)}
-            <p>{shoppingItem.item} - Amount: {shoppingItem.amount}</p>
+            <p>
+                {shoppingItem.item}
+
+                <input
+                    type="number"
+                    min = "1"
+                    bind:value={shoppingItem.amount}
+                    onchange={() => UpdateItem(shoppingItem)}
+                />
+
+            <button onclick={() => DeleteItem(shoppingItem.id)}>
+                Delete
+            </button>
+            </p>
         {/each}
     </div>
 
