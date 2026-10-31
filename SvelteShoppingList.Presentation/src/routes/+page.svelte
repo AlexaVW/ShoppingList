@@ -122,12 +122,12 @@
 <main>
     <h1>ShoppingList</h1>
 
-    <div>
+    <div class="shoppingListBg">
         {#each shoppingItems as shoppingItem (shoppingItem.id)}
-            <p>
-                {shoppingItem.item}
+            <div class="shoppingItem">
+            {shoppingItem.item}
 
-                <input
+                <input class="amountBar"
                     type="number"
                     min = "1"
                     bind:value={shoppingItem.amount}
@@ -137,7 +137,7 @@
             <button onclick={() => DeleteItem(shoppingItem.id)}>
                 Delete
             </button>
-            </p>
+            </div>
         {/each}
     </div>
 
@@ -150,7 +150,7 @@
             bind:value={newItem.item}
         />
 
-        <input
+        <input class="amountBar"
             type="number"
             bind:value={newItem.amount}
         />
@@ -162,7 +162,35 @@
 
 <style>
     :global(body){
-        background-color: darkolivegreen;
+        background-color: rgb(126, 141, 100);
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .shoppingListBg{
+        background-color:#f8e2c8;
+        border: 2px solid #613b29;
+        border-radius: 10px;
+        padding: 40px;
+        width: 500px;
+        text-align: left;
+        
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .shoppingItem{
+        border-bottom: 1px solid #613b29;
+        padding-bottom: 0.5rem;
+    }
+
+    .amountBar{
+        width: 30px;
     }
 </style>
 
